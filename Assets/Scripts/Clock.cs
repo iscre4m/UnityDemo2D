@@ -15,7 +15,6 @@ public class Clock : MonoBehaviour
     void Update()
     {
         time += Time.deltaTime;
-
         clock.text = $"{(int)time / 60:00}:{time % 60:00.0}";
     }
 }

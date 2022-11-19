@@ -9,9 +9,11 @@ public class Bird : MonoBehaviour
     private Rigidbody2D rigidBody2D;
     private Vector2 jumpForce;
     private float holdTime;
+    private GameMenu gameMenu;
 
     void Start()
     {
+        gameMenu = GameObject.Find("GameMenu").GetComponent<GameMenu>();
         rigidBody2D = GetComponent<Rigidbody2D>();
         jumpForce = Vector2.up * JumpMagnitude;
         holdTime = 0;
@@ -35,7 +37,7 @@ public class Bird : MonoBehaviour
                 break;
             case 2:
                 jump = 1;
-                if(Input.GetKey(KeyCode.Space))
+                if (Input.GetKey(KeyCode.Space))
                 {
                     if (holdTime == 0)
                     {
@@ -64,12 +66,13 @@ public class Bird : MonoBehaviour
         if (other.gameObject.CompareTag("Pipe"))
         {
             transform.position = new Vector2(-4, 0);
-            foreach(var pipe in SpawnPoint.SpawnedPipes)
+            foreach (var pipe in SpawnPoint.SpawnedPipes)
             {
                 Destroy(pipe);
             }
             SpawnPoint.SpawnedPipes.Clear();
             SpawnPoint.PipeTime = 0;
+            gameMenu.ShowMenu(buttonText: "Again");
         }
     }
 }

@@ -5,7 +5,8 @@ public class SpawnPoint : MonoBehaviour
 {
     [SerializeField]
     private GameObject pipe;
-    private float pipeSpawnTime = 5;
+    private float pipeSpawnTime = 3;
+    private float pipeDeltaTime = 3;
     public static float PipeTime;
     public static List<GameObject> SpawnedPipes;
 
@@ -20,7 +21,7 @@ public class SpawnPoint : MonoBehaviour
         PipeTime -= Time.deltaTime;
         if (PipeTime < 0)
         {
-            PipeTime = pipeSpawnTime;
+            PipeTime = pipeSpawnTime + pipeDeltaTime * (1 - GameMenu.GameDifficulty);
             SpawnPipe();
         }
     }
