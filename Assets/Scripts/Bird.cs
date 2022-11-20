@@ -10,10 +10,12 @@ public class Bird : MonoBehaviour
     private Vector2 jumpForce;
     private float holdTime;
     private GameMenu gameMenu;
+    private GameStat gameStat;
 
     void Start()
     {
         gameMenu = GameObject.Find("GameMenu").GetComponent<GameMenu>();
+        gameStat = GameObject.Find("GameStat").GetComponent<GameStat>();
         rigidBody2D = GetComponent<Rigidbody2D>();
         jumpForce = Vector2.up * JumpMagnitude;
         holdTime = 0;
@@ -35,7 +37,7 @@ public class Bird : MonoBehaviour
                 jump *= Time.deltaTime * 100;
                 rigidBody2D.AddForce(jumpForce * jump);
                 break;
-            case 2:
+            default:
                 jump = 1;
                 if (Input.GetKey(KeyCode.Space))
                 {
@@ -59,6 +61,11 @@ public class Bird : MonoBehaviour
                 }
                 break;
         }
+        
+        if (jump > 0)
+        {
+            gameStat.GameEnergy -= jump / 1000;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -73,6 +80,14 @@ public class Bird : MonoBehaviour
             SpawnPoint.SpawnedPipes.Clear();
             SpawnPoint.PipeTime = 0;
             gameMenu.ShowMenu(buttonText: "Again");
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Tube"))
+        {
+            ++gameStat.GameScore;
         }
     }
 }

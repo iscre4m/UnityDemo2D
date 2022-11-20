@@ -27,7 +27,7 @@ public class GameMenu : MonoBehaviour
         {
             ShowMenu(
                 !menuContainer.activeInHierarchy,
-                message: $"Paused on time: {(int)gameStat.GameTime / 60:00}:{gameStat.GameTime % 60:00.0}"
+                message: $"Paused on time: {(int)gameStat.GameTime / 60:00}:{gameStat.GameTime % 60:00.0}. Score: {gameStat.GameScore:0000}. Energy: {gameStat.GameEnergy:0.00}"
             );
         }
     }
