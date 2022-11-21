@@ -68,6 +68,16 @@ public class Bird : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        transform.rotation = Quaternion.Euler(0, 0, 3 * rigidBody2D.velocity.y);
+
+        if (rigidBody2D.velocity.x != 0)
+        {
+            rigidBody2D.velocity = new Vector2(0, rigidBody2D.velocity.y);
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Pipe"))
@@ -80,6 +90,22 @@ public class Bird : MonoBehaviour
             SpawnPoint.SpawnedPipes.Clear();
             SpawnPoint.PipeTime = 0;
             gameMenu.ShowMenu(buttonText: "Again");
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Energy"))
+        {
+            Destroy(other.gameObject);
+            if (gameStat.GameEnergy < .5f)
+            {
+                gameStat.GameEnergy += .5f;
+            }
+            else
+            {
+                gameStat.GameEnergy = 1;
+            }
         }
     }
 
