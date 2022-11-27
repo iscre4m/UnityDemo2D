@@ -70,7 +70,12 @@ public class Bird : MonoBehaviour
 
         if (energyDraining)
         {
-            gameStat.GameEnergy -= .000775f;
+            gameStat.GameEnergy -= Time.deltaTime * .05f;
+        }
+
+        if (gameStat.GameEnergy <= 0)
+        {
+            Reset();
         }
     }
 
@@ -89,14 +94,7 @@ public class Bird : MonoBehaviour
         switch (other.gameObject.tag)
         {
             case "Pipe":
-                transform.position = new Vector2(-4, 0);
-                foreach (var pipe in SpawnPoint.SpawnedPipes)
-                {
-                    Destroy(pipe);
-                }
-                SpawnPoint.SpawnedPipes.Clear();
-                SpawnPoint.PipeTime = 0;
-                gameMenu.ShowMenu(buttonText: "Again");
+                Reset();
                 break;
             case "Range":
                 energyDraining = true;
@@ -134,5 +132,21 @@ public class Bird : MonoBehaviour
         {
             ++gameStat.GameScore;
         }
+    }
+
+    private void Reset()
+    {
+        transform.position = new Vector2(-4, 0);
+        foreach (var pipe in SpawnPoint.SpawnedPipes)
+        {
+            Destroy(pipe);
+        }
+        SpawnPoint.SpawnedPipes.Clear();
+        SpawnPoint.PipeTime = 0;
+        gameStat.GameTime = 0;
+        gameStat.GameScore = 0;
+        --gameStat.LivesCount;
+        gameStat.GameEnergy = .5f;
+        gameMenu.ShowMenu(buttonText: "Again");
     }
 }

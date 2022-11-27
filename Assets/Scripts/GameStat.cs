@@ -8,6 +8,8 @@ public class GameStat : MonoBehaviour
     private TMPro.TextMeshProUGUI score;
     [SerializeField]
     private UnityEngine.UI.Image energy;
+    [SerializeField]
+    private TMPro.TextMeshProUGUI lives;
 
     private float _gameTime;
     private short _gameScore;
@@ -16,6 +18,7 @@ public class GameStat : MonoBehaviour
     private float _maxTime;
     private string _maxScoreFilename = "max_score.sav";
     private string _maxDataFilename = "max_data.json";
+    private byte _livesCount;
 
     public float GameTime
     {
@@ -47,6 +50,16 @@ public class GameStat : MonoBehaviour
         }
     }
 
+    public byte LivesCount
+    {
+        get => _livesCount;
+        set
+        {
+            _livesCount = value;
+            UpdateUILives();
+        }
+    }
+
     private void Start()
     {
         GameEnergy = energy.fillAmount;
@@ -74,6 +87,8 @@ public class GameStat : MonoBehaviour
 
         Debug.Log($"maxScore = {_maxScore}");
         Debug.Log($"maxTime = {_maxTime}");
+
+        LivesCount = 3;
     }
 
     void LateUpdate()
@@ -118,6 +133,11 @@ public class GameStat : MonoBehaviour
         }
 
         //Debug.LogError($"gameEnergy out of range: {_gameEnergy}");
+    }
+
+    private void UpdateUILives()
+    {
+        lives.text = $"{_livesCount}";
     }
 
     class MaxData
