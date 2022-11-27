@@ -11,6 +11,7 @@ public class Bird : MonoBehaviour
     private float holdTime;
     private GameMenu gameMenu;
     private GameStat gameStat;
+    private bool energyDraining = false;
 
     void Start()
     {
@@ -64,7 +65,12 @@ public class Bird : MonoBehaviour
         
         if (jump > 0)
         {
-            gameStat.GameEnergy -= jump / 1000;
+            gameStat.GameEnergy -= jump / 2000;
+        }
+
+        if (energyDraining)
+        {
+            gameStat.GameEnergy -= .000775f;
         }
     }
 
@@ -80,16 +86,29 @@ public class Bird : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Pipe"))
+        switch (other.gameObject.tag)
         {
-            transform.position = new Vector2(-4, 0);
-            foreach (var pipe in SpawnPoint.SpawnedPipes)
-            {
-                Destroy(pipe);
-            }
-            SpawnPoint.SpawnedPipes.Clear();
-            SpawnPoint.PipeTime = 0;
-            gameMenu.ShowMenu(buttonText: "Again");
+            case "Pipe":
+                transform.position = new Vector2(-4, 0);
+                foreach (var pipe in SpawnPoint.SpawnedPipes)
+                {
+                    Destroy(pipe);
+                }
+                SpawnPoint.SpawnedPipes.Clear();
+                SpawnPoint.PipeTime = 0;
+                gameMenu.ShowMenu(buttonText: "Again");
+                break;
+            case "Range":
+                energyDraining = true;
+                break;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Range"))
+        {
+            energyDraining = false;
         }
     }
 
