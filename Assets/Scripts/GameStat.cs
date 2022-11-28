@@ -17,8 +17,9 @@ public class GameStat : MonoBehaviour
     private short _maxScore;
     private float _maxTime;
     private byte _livesCount;
-    private GameMenu gameMenu;
 
+    private GameMenu gameMenu;
+    private SpawnPoint spawnPoint;
 
     // private const string _maxScoreFilename = "max_score.sav";
     private string _maxDataFilename;
@@ -66,6 +67,8 @@ public class GameStat : MonoBehaviour
     private void Start()
     {
         gameMenu = GameObject.Find("GameMenu").GetComponent<GameMenu>();
+        spawnPoint = GameObject.Find("SpawnPoint").GetComponent<SpawnPoint>();
+
         _maxDataFilename = "max_data.json";
         GameEnergy = energy.fillAmount;
 
@@ -160,29 +163,15 @@ public class GameStat : MonoBehaviour
 
     public void Reset()
     {
+        GameEnergy = .5f;
         transform.position = new Vector2(-4, 0);
+        spawnPoint.Clear();
+    }
 
-        foreach (var pipe in SpawnPoint.SpawnedPipes)
-        {
-            Destroy(pipe);
-        }
-        foreach (var energy in SpawnPoint.SpawnedEnergy)
-        {
-            Destroy(energy);
-        }
-
-        SpawnPoint.SpawnedPipes.Clear();
-        SpawnPoint.SpawnedEnergy.Clear();
-        SpawnPoint.PipeTime = 0;
-        SpawnPoint.EnergyTime = 0;
-
-        // if (_livesCount == 0)
-        // {
-        //     GameTime = 0;
-        //     GameScore = 0;
-               GameEnergy = .5f;
-        //     gameMenu.ShowMenu(buttonText: "Again");
-        //     LivesCount = 3;
-        // }
+    public void GameOver()
+    {
+        GameTime = 0;
+        GameScore = 0;
+        gameMenu.ShowMenu(buttonText: "Again");
     }
 }

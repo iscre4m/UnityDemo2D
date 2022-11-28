@@ -14,6 +14,8 @@ public class GameMenu : MonoBehaviour
 
     private GameStat gameStat;
 
+    private const int MAX_ENERGY = 100;
+
     void Start()
     {
         GameDifficulty = .5f;
@@ -32,7 +34,7 @@ public class GameMenu : MonoBehaviour
                 $"{(int)gameStat.GameTime / 60:00}:" +
                 $"{gameStat.GameTime % 60:00.0}. " +
                 $"Score: {gameStat.GameScore:0000}. " +
-                $"Energy: {gameStat.GameEnergy:0.00}"
+                $"Energy: {(int)(gameStat.GameEnergy * 100)}/{MAX_ENERGY}"
             );
         }
     }
@@ -55,6 +57,10 @@ public class GameMenu : MonoBehaviour
 
     public void MenuButtonClick()
     {
+        if (menuButtonText.text == "Again")
+        {
+            gameStat.LivesCount = 3;
+        }
         ShowMenu(false);
     }
 

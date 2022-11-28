@@ -8,39 +8,40 @@ public class SpawnPoint : MonoBehaviour
     [SerializeField]
     private GameObject energy;
 
-    private float pipeSpawnTime = 3;
-    private float pipeDeltaTime = 3;
+    private const float PIPE_SPAWN_TIME = 3;
+    private const float PIPE_DELTA_TIME = 3;
+    private const int PIPE_SHIFT = 2;
 
-    public static float PipeTime;
-    public static float EnergyTime;
+    private float pipeTime;
+    private float energyTime;
 
-    public static List<GameObject> SpawnedPipes;
-    public static List<GameObject> SpawnedEnergy;
+    private List<GameObject> spawnedPipes;
+    private List<GameObject> spawnedEnergy;
 
     void Start()
     {
-        PipeTime = 0;
-        EnergyTime = 0;
-        SpawnedPipes = new List<GameObject>();
-        SpawnedEnergy = new List<GameObject>();
+        pipeTime = 0;
+        energyTime = 0;
+        spawnedPipes = new List<GameObject>();
+        spawnedEnergy = new List<GameObject>();
     }
 
     void LateUpdate()
     {
-        PipeTime -= Time.deltaTime;
-        if (PipeTime < 0)
+        pipeTime -= Time.deltaTime;
+        if (pipeTime < 0)
         {
-            PipeTime = pipeSpawnTime + pipeDeltaTime * (1 - GameMenu.GameDifficulty);
+            pipeTime = PIPE_SPAWN_TIME + PIPE_DELTA_TIME * (1 - GameMenu.GameDifficulty);
             SpawnPipe();
             if (Random.value < .33f)
             {
-                EnergyTime = PipeTime / 2;
+                energyTime = pipeTime / 2;
             }
         }
-        if (EnergyTime > 0)
+        if (energyTime > 0)
         {
-            EnergyTime -= Time.deltaTime;
-            if (EnergyTime < 0)
+            energyTime -= Time.deltaTime;
+            if (energyTime < 0)
             {
                 SpawnEnergy();
             }
@@ -49,19 +50,37 @@ public class SpawnPoint : MonoBehaviour
 
     void SpawnPipe()
     {
-        SpawnedPipes.Add(
+        spawnedPipes.Add(
             Instantiate(pipe, transform.position +
-            Vector3.up * Random.Range(-Bird.PipeShift, Bird.PipeShift),
+            Vector3.up * Random.Range(-PIPE_SHIFT, PIPE_SHIFT),
             Quaternion.identity)
         );
     }
 
     void SpawnEnergy()
     {
-        SpawnedEnergy.Add(
+        spawnedEnergy.Add(
             Instantiate(energy, transform.position +
-            Vector3.up * Random.Range(-Bird.PipeShift, Bird.PipeShift),
+            Vector3.up * Random.Range(-PIPE_SHIFT, PIPE_SHIFT),
             Quaternion.identity)
         );
+    }
+
+    public void Clear()
+    {
+        foreach (var pipe in spawnedPipes)
+        {
+            Destroy(pipe);
+        }
+        foreach (var energy in spawnedEnergy)
+        {
+            Destroy(energy);
+        }
+
+        spawnedPipes.Clear();
+        spawnedEnergy.Clear();
+
+        pipeTime = 0;
+        energyTime = 0;
     }
 }

@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class Bird : MonoBehaviour
 {
-    public static float PipeShift = 2;
-
     [SerializeField]
     private float JumpMagnitude = 10;
 
@@ -75,6 +73,16 @@ public class Bird : MonoBehaviour
         {
             gameStat.GameEnergy -= Time.deltaTime * .05f;
         }
+
+        if (gameStat.GameEnergy <= 0)
+        {
+            gameStat.Reset();
+            --gameStat.LivesCount;
+            if (gameStat.LivesCount == 0)
+            {
+                gameStat.GameOver();
+            }
+        }
     }
 
     private void LateUpdate()
@@ -85,12 +93,6 @@ public class Bird : MonoBehaviour
         {
             rigidBody2D.velocity = new Vector2(0, rigidBody2D.velocity.y);
         }
-
-        if (gameStat.GameEnergy <= 0)
-        {
-            gameStat.Reset();
-            // --gameStat.LivesCount;
-        }
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -99,6 +101,11 @@ public class Bird : MonoBehaviour
         {
             case "Pipe":
                 gameStat.Reset();
+                --gameStat.LivesCount;
+                if (gameStat.LivesCount == 0)
+                {
+                    gameStat.GameOver();
+                }
                 break;
             case "Range":
                 energyDraining = true;
@@ -126,7 +133,8 @@ public class Bird : MonoBehaviour
 
                 return;
             }
-                gameStat.GameEnergy = 1;
+
+            gameStat.GameEnergy = 1;
         }
     }
 
