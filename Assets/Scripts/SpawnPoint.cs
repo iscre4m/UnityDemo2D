@@ -10,16 +10,19 @@ public class SpawnPoint : MonoBehaviour
 
     private float pipeSpawnTime = 3;
     private float pipeDeltaTime = 3;
+
     public static float PipeTime;
-    private float energyTime;
+    public static float EnergyTime;
 
     public static List<GameObject> SpawnedPipes;
+    public static List<GameObject> SpawnedEnergy;
 
     void Start()
     {
         PipeTime = 0;
-        energyTime = 0;
+        EnergyTime = 0;
         SpawnedPipes = new List<GameObject>();
+        SpawnedEnergy = new List<GameObject>();
     }
 
     void LateUpdate()
@@ -31,13 +34,13 @@ public class SpawnPoint : MonoBehaviour
             SpawnPipe();
             if (Random.value < .33f)
             {
-                energyTime = PipeTime / 2;
+                EnergyTime = PipeTime / 2;
             }
         }
-        if (energyTime > 0)
+        if (EnergyTime > 0)
         {
-            energyTime -= Time.deltaTime;
-            if (energyTime < 0)
+            EnergyTime -= Time.deltaTime;
+            if (EnergyTime < 0)
             {
                 SpawnEnergy();
             }
@@ -49,13 +52,16 @@ public class SpawnPoint : MonoBehaviour
         SpawnedPipes.Add(
             Instantiate(pipe, transform.position +
             Vector3.up * Random.Range(-Bird.PipeShift, Bird.PipeShift),
-            Quaternion.identity));
+            Quaternion.identity)
+        );
     }
 
     void SpawnEnergy()
     {
-        GameObject.Instantiate(energy, transform.position +
+        SpawnedEnergy.Add(
+            Instantiate(energy, transform.position +
             Vector3.up * Random.Range(-Bird.PipeShift, Bird.PipeShift),
-            Quaternion.identity);
+            Quaternion.identity)
+        );
     }
 }

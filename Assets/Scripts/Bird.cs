@@ -6,20 +6,23 @@ public class Bird : MonoBehaviour
 
     [SerializeField]
     private float JumpMagnitude = 10;
+
     private Rigidbody2D rigidBody2D;
     private Vector2 jumpForce;
     private float holdTime;
-    private GameMenu gameMenu;
+    // private GameMenu gameMenu;
     private GameStat gameStat;
-    private bool energyDraining = false;
+    private bool energyDraining;
 
     void Start()
     {
-        gameMenu = GameObject.Find("GameMenu").GetComponent<GameMenu>();
+        // gameMenu = GameObject.Find("GameMenu").GetComponent<GameMenu>();
         gameStat = GameObject.Find("GameStat").GetComponent<GameStat>();
+
         rigidBody2D = GetComponent<Rigidbody2D>();
         jumpForce = Vector2.up * JumpMagnitude;
         holdTime = 0;
+        energyDraining = false;
     }
 
     void Update()
@@ -72,11 +75,6 @@ public class Bird : MonoBehaviour
         {
             gameStat.GameEnergy -= Time.deltaTime * .05f;
         }
-
-        if (gameStat.GameEnergy <= 0)
-        {
-            Reset();
-        }
     }
 
     private void LateUpdate()
@@ -87,6 +85,12 @@ public class Bird : MonoBehaviour
         {
             rigidBody2D.velocity = new Vector2(0, rigidBody2D.velocity.y);
         }
+
+        if (gameStat.GameEnergy <= 0)
+        {
+            gameStat.Reset();
+            // --gameStat.LivesCount;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -94,7 +98,7 @@ public class Bird : MonoBehaviour
         switch (other.gameObject.tag)
         {
             case "Pipe":
-                Reset();
+                gameStat.Reset();
                 break;
             case "Range":
                 energyDraining = true;
@@ -115,14 +119,14 @@ public class Bird : MonoBehaviour
         if (other.gameObject.CompareTag("Energy"))
         {
             Destroy(other.gameObject);
+
             if (gameStat.GameEnergy < .5f)
             {
                 gameStat.GameEnergy += .5f;
+
+                return;
             }
-            else
-            {
                 gameStat.GameEnergy = 1;
-            }
         }
     }
 
@@ -132,21 +136,5 @@ public class Bird : MonoBehaviour
         {
             ++gameStat.GameScore;
         }
-    }
-
-    private void Reset()
-    {
-        transform.position = new Vector2(-4, 0);
-        foreach (var pipe in SpawnPoint.SpawnedPipes)
-        {
-            Destroy(pipe);
-        }
-        SpawnPoint.SpawnedPipes.Clear();
-        SpawnPoint.PipeTime = 0;
-        gameStat.GameTime = 0;
-        gameStat.GameScore = 0;
-        --gameStat.LivesCount;
-        gameStat.GameEnergy = .5f;
-        gameMenu.ShowMenu(buttonText: "Again");
     }
 }

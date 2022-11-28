@@ -16,9 +16,12 @@ public class GameStat : MonoBehaviour
     private float _gameEnergy;
     private short _maxScore;
     private float _maxTime;
-    private string _maxScoreFilename = "max_score.sav";
-    private string _maxDataFilename = "max_data.json";
     private byte _livesCount;
+    private GameMenu gameMenu;
+
+
+    // private const string _maxScoreFilename = "max_score.sav";
+    private string _maxDataFilename;
 
     public float GameTime
     {
@@ -62,31 +65,32 @@ public class GameStat : MonoBehaviour
 
     private void Start()
     {
+        gameMenu = GameObject.Find("GameMenu").GetComponent<GameMenu>();
+        _maxDataFilename = "max_data.json";
         GameEnergy = energy.fillAmount;
-        if (System.IO.File.Exists(_maxScoreFilename))
-        {
-            string[] lines = System.IO.File.ReadAllLines(_maxScoreFilename);
-            _maxScore = short.Parse(lines[0]);
-            _maxTime = float.Parse(lines[1]);
-        }
-        else
-        {
-            System.IO.File.WriteAllText(_maxScoreFilename, "0\n0");
-            _maxScore = 0;
-            _maxTime = 0;
-        }
+
+        // if (System.IO.File.Exists(_maxScoreFilename))
+        // {
+        //     string[] lines = System.IO.File.ReadAllLines(_maxScoreFilename);
+        //     _maxScore = short.Parse(lines[0]);
+        //     _maxTime = float.Parse(lines[1]);
+        // }
+        // else
+        // {
+        //     System.IO.File.WriteAllText(_maxScoreFilename, "0\n0");
+        //     _maxScore = 0;
+        //     _maxTime = 0;
+        // }
 
         if (System.IO.File.Exists(_maxDataFilename))
         {
             var maxData = JsonUtility.FromJson<MaxData>(
                 System.IO.File.ReadAllText(_maxDataFilename)
             );
+
             _maxScore = maxData.GameScore;
             _maxTime = maxData.GameTime;
         }
-
-        Debug.Log($"maxScore = {_maxScore}");
-        Debug.Log($"maxTime = {_maxTime}");
 
         LivesCount = 3;
     }
@@ -98,25 +102,35 @@ public class GameStat : MonoBehaviour
 
     private void OnDestroy()
     {
-        System.IO.File.WriteAllText(_maxScoreFilename,
-                                    $"{(_gameScore > _maxScore ? _gameScore : _maxScore)}\n" +
-                                    $"{(_gameTime > _maxTime ? _gameTime : _maxTime)}");
+        // System.IO.File.WriteAllText(
+        //     _maxScoreFilename,
+        //     $"{(_gameScore > _maxScore ? _gameScore : _maxScore)}\n" +
+        //     $"{(_gameTime > _maxTime ? _gameTime : _maxTime)}"
+        // );
+
         var maxData = new MaxData
         {
             GameScore = (_gameScore > _maxScore ? _gameScore : _maxScore),
             GameTime = (_gameTime > _maxTime ? _gameTime : _maxTime)
         };
+
         System.IO.File.WriteAllText(_maxDataFilename, JsonUtility.ToJson(maxData, true));
     }
 
     private void UpdateUITime()
     {
         clock.text = $"{(int)_gameTime / 60:00}:{_gameTime % 60:00.0}";
+
+        if (_gameTime > _maxTime)
+        {
+            clock.fontStyle = TMPro.FontStyles.Bold;
+        }
     }
 
     private void UpdateUIScore()
     {
         score.text = $"{_gameScore:0000}";
+
         if (_gameScore > _maxScore)
         {
             score.fontStyle = TMPro.FontStyles.Bold;
@@ -131,8 +145,6 @@ public class GameStat : MonoBehaviour
 
             return;
         }
-
-        //Debug.LogError($"gameEnergy out of range: {_gameEnergy}");
     }
 
     private void UpdateUILives()
@@ -144,5 +156,33 @@ public class GameStat : MonoBehaviour
     {
         public short GameScore;
         public float GameTime;
+    }
+
+    public void Reset()
+    {
+        transform.position = new Vector2(-4, 0);
+
+        foreach (var pipe in SpawnPoint.SpawnedPipes)
+        {
+            Destroy(pipe);
+        }
+        foreach (var energy in SpawnPoint.SpawnedEnergy)
+        {
+            Destroy(energy);
+        }
+
+        SpawnPoint.SpawnedPipes.Clear();
+        SpawnPoint.SpawnedEnergy.Clear();
+        SpawnPoint.PipeTime = 0;
+        SpawnPoint.EnergyTime = 0;
+
+        // if (_livesCount == 0)
+        // {
+        //     GameTime = 0;
+        //     GameScore = 0;
+               GameEnergy = .5f;
+        //     gameMenu.ShowMenu(buttonText: "Again");
+        //     LivesCount = 3;
+        // }
     }
 }
