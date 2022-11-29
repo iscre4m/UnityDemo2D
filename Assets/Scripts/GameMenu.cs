@@ -11,6 +11,8 @@ public class GameMenu : MonoBehaviour
     private TMPro.TextMeshProUGUI menuButtonText;
     [SerializeField]
     private TMPro.TextMeshProUGUI messageText;
+    [SerializeField]
+    private UnityEngine.UI.Slider difficultySlider;
 
     private GameStat gameStat;
 
@@ -18,7 +20,7 @@ public class GameMenu : MonoBehaviour
 
     void Start()
     {
-        GameDifficulty = .5f;
+        GameDifficulty = difficultySlider.value;
         gameStat = GameObject.Find("GameStat").GetComponent<GameStat>();
         ShowMenu(menuContainer.activeInHierarchy, "Start");
     }
@@ -29,17 +31,11 @@ public class GameMenu : MonoBehaviour
         {
             ShowMenu(
                 !menuContainer.activeInHierarchy,
-                // message:
-                // $"Paused on time: " +
-                // $"{(int)gameStat.GameTime / 60:00}:" +
-                // $"{gameStat.GameTime % 60:00.0}. " +
-                // $"Score: {gameStat.GameScore:0000}. " +
-                // $"Energy: {(int)(gameStat.GameEnergy * 100)}/{MAX_ENERGY}"
                 message:
                 $"Current time: {(int)gameStat.GameTime / 60:00}:{gameStat.GameTime % 60:00.0} - " +
                 $"Record time: {(int)gameStat.MaxTime / 60:00}:{gameStat.MaxTime % 60:00.0}\n" +
                 $"Current score: {gameStat.GameScore} - " +
-                $"Max score: {gameStat.MaxScore}"
+                $"Max score: {gameStat.MaxScore}\n"
             );
         }
     }

@@ -159,7 +159,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 50}
+  m_SizeDelta: {x: 102, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &90458303
 MonoBehaviour:
@@ -1717,7 +1717,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 94.94, y: 99.54}
+  m_SizeDelta: {x: 98, y: 115}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &681952607
 MonoBehaviour:
@@ -1889,7 +1889,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.5
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -3878,6 +3878,7 @@ MonoBehaviour:
   menuContainer: {fileID: 688378043}
   menuButtonText: {fileID: 412557125}
   messageText: {fileID: 1455147986}
+  difficultySlider: {fileID: 706247495}
 --- !u!1 &1555393892
 GameObject:
   m_ObjectHideFlags: 0
@@ -4047,7 +4048,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 300}
+  m_AnchoredPosition: {x: 0, y: 317}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1603925583
@@ -4197,7 +4198,7 @@ GameObject:
   - component: {fileID: 1618777125}
   - component: {fileID: 1618777124}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: ToggleMenuText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
