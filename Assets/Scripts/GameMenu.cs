@@ -29,12 +29,17 @@ public class GameMenu : MonoBehaviour
         {
             ShowMenu(
                 !menuContainer.activeInHierarchy,
+                // message:
+                // $"Paused on time: " +
+                // $"{(int)gameStat.GameTime / 60:00}:" +
+                // $"{gameStat.GameTime % 60:00.0}. " +
+                // $"Score: {gameStat.GameScore:0000}. " +
+                // $"Energy: {(int)(gameStat.GameEnergy * 100)}/{MAX_ENERGY}"
                 message:
-                $"Paused on time: " +
-                $"{(int)gameStat.GameTime / 60:00}:" +
-                $"{gameStat.GameTime % 60:00.0}. " +
-                $"Score: {gameStat.GameScore:0000}. " +
-                $"Energy: {(int)(gameStat.GameEnergy * 100)}/{MAX_ENERGY}"
+                $"Current time: {(int)gameStat.GameTime / 60:00}:{gameStat.GameTime % 60:00.0} - " +
+                $"Record time: {(int)gameStat.MaxTime / 60:00}:{gameStat.MaxTime % 60:00.0}\n" +
+                $"Current score: {gameStat.GameScore} - " +
+                $"Max score: {gameStat.MaxScore}"
             );
         }
     }

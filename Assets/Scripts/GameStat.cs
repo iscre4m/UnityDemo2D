@@ -64,6 +64,16 @@ public class GameStat : MonoBehaviour
         }
     }
 
+    public short MaxScore
+    {
+        get => _maxScore;
+    }
+
+    public float MaxTime
+    {
+        get => _maxTime;
+    }
+
     private void Start()
     {
         gameMenu = GameObject.Find("GameMenu").GetComponent<GameMenu>();
