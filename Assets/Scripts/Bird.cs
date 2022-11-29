@@ -123,18 +123,28 @@ public class Bird : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Energy"))
+        switch (other.gameObject.tag)
         {
-            Destroy(other.gameObject);
+            case "Energy":
+                Destroy(other.gameObject);
 
-            if (gameStat.GameEnergy < .5f)
-            {
-                gameStat.GameEnergy += .5f;
+                if (gameStat.GameEnergy < .5f)
+                {
+                    gameStat.GameEnergy += .5f;
 
-                return;
-            }
+                    return;
+                }
 
-            gameStat.GameEnergy = 1;
+                gameStat.GameEnergy = 1;
+                break;
+            case "Heart":
+                Destroy(other.gameObject);
+
+                if (gameStat.LivesCount < 5)
+                {
+                    ++gameStat.LivesCount;
+                }
+                break;
         }
     }
 

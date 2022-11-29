@@ -8,6 +8,7 @@ TagManager:
   - Tube
   - Energy
   - Range
+  - Heart
   layers:
   - Default
   - TransparentFX
