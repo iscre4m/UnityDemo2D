@@ -21,7 +21,7 @@ public class GameStat : MonoBehaviour
     private GameMenu gameMenu;
     private SpawnPoint spawnPoint;
 
-    private const string _recordsDataFilename = "max_data.json";
+    private const string _recordsDataFilename = "records_data.json";
 
     public float GameTime
     {
@@ -74,6 +74,12 @@ public class GameStat : MonoBehaviour
     }
 
     private RecordsData recordsData;
+    private readonly Color[] RECORD_COLORS =
+    {
+        new Color(1, .84f, 0),
+        new Color(.75f, .75f, .75f),
+        new Color(1, .34f, .2f)
+    };
 
     private void Start()
     {
@@ -92,11 +98,6 @@ public class GameStat : MonoBehaviour
 
             _maxScore = recordsData.Scores[0];
             _maxTime = recordsData.Times[0];
-        }
-
-        for (int i = 0; i < 3; ++i)
-        {
-            Debug.Log($"{recordsData.Scores[i]} - {recordsData.Times[i]}");
         }
     }
 
@@ -156,9 +157,13 @@ public class GameStat : MonoBehaviour
     {
         score.text = $"{_gameScore:0000}";
 
-        if (_gameScore > _maxScore)
+        for (int i = 2; i > -1; --i)
         {
-            score.fontStyle = TMPro.FontStyles.Bold;
+            if (_gameScore > recordsData.Scores[i])
+            {
+                score.fontStyle = TMPro.FontStyles.Bold;
+                score.color = RECORD_COLORS[i];
+            }
         }
     }
 
