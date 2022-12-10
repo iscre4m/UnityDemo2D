@@ -21,8 +21,7 @@ public class GameStat : MonoBehaviour
     private GameMenu gameMenu;
     private SpawnPoint spawnPoint;
 
-    // private const string _maxScoreFilename = "max_score.sav";
-    private string _maxDataFilename;
+    private const string _recordsDataFilename = "max_data.json";
 
     public float GameTime
     {
@@ -74,38 +73,31 @@ public class GameStat : MonoBehaviour
         get => _maxTime;
     }
 
+    private RecordsData recordsData;
+
     private void Start()
     {
         gameMenu = GameObject.Find("GameMenu").GetComponent<GameMenu>();
         spawnPoint = GameObject.Find("SpawnPoint").GetComponent<SpawnPoint>();
 
-        _maxDataFilename = "max_data.json";
+        LivesCount = 3;
         GameEnergy = energy.fillAmount;
+        recordsData = new RecordsData();
 
-        // if (System.IO.File.Exists(_maxScoreFilename))
-        // {
-        //     string[] lines = System.IO.File.ReadAllLines(_maxScoreFilename);
-        //     _maxScore = short.Parse(lines[0]);
-        //     _maxTime = float.Parse(lines[1]);
-        // }
-        // else
-        // {
-        //     System.IO.File.WriteAllText(_maxScoreFilename, "0\n0");
-        //     _maxScore = 0;
-        //     _maxTime = 0;
-        // }
-
-        if (System.IO.File.Exists(_maxDataFilename))
+        if (System.IO.File.Exists(_recordsDataFilename))
         {
-            var maxData = JsonUtility.FromJson<MaxData>(
-                System.IO.File.ReadAllText(_maxDataFilename)
+            recordsData = JsonUtility.FromJson<RecordsData>(
+                System.IO.File.ReadAllText(_recordsDataFilename)
             );
 
-            _maxScore = maxData.GameScore;
-            _maxTime = maxData.GameTime;
+            _maxScore = recordsData.Scores[0];
+            _maxTime = recordsData.Times[0];
         }
 
-        LivesCount = 3;
+        for (int i = 0; i < 3; ++i)
+        {
+            Debug.Log($"{recordsData.Scores[i]} - {recordsData.Times[i]}");
+        }
     }
 
     void LateUpdate()
@@ -115,19 +107,39 @@ public class GameStat : MonoBehaviour
 
     private void OnDestroy()
     {
-        // System.IO.File.WriteAllText(
-        //     _maxScoreFilename,
-        //     $"{(_gameScore > _maxScore ? _gameScore : _maxScore)}\n" +
-        //     $"{(_gameTime > _maxTime ? _gameTime : _maxTime)}"
-        // );
-
-        var maxData = new MaxData
+        for (int i = 0; i < 3; ++i)
         {
-            GameScore = (_gameScore > _maxScore ? _gameScore : _maxScore),
-            GameTime = (_gameTime > _maxTime ? _gameTime : _maxTime)
-        };
+            if (_gameScore > recordsData.Scores[i])
+            {
+                switch (i)
+                {
+                    case 0:
+                        for (int j = 0; j < 2; ++j)
+                        {
+                            recordsData.Scores[2 - j] =
+                            recordsData.Scores[1 - j];
+                            recordsData.Times[2 - j] =
+                            recordsData.Times[1 - j];
+                        }
+                        break;
+                    case 1:
+                        recordsData.Scores[2] = recordsData.Scores[1];
+                        recordsData.Times[2] = recordsData.Times[1];
+                        break;
+                    default:
+                        break;
+                }
 
-        System.IO.File.WriteAllText(_maxDataFilename, JsonUtility.ToJson(maxData, true));
+                recordsData.Scores[i] = _gameScore;
+                recordsData.Times[i] = _gameTime;
+                break;
+            }
+        }
+
+        System.IO.File.WriteAllText(
+            _recordsDataFilename,
+            JsonUtility.ToJson(recordsData, true)
+        );
     }
 
     private void UpdateUITime()
@@ -165,10 +177,10 @@ public class GameStat : MonoBehaviour
         lives.text = $"{_livesCount}";
     }
 
-    class MaxData
+    class RecordsData
     {
-        public short GameScore;
-        public float GameTime;
+        public short[] Scores = new short[3];
+        public float[] Times = new float[3];
     }
 
     public void Reset()
