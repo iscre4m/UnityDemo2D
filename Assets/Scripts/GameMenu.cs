@@ -13,8 +13,11 @@ public class GameMenu : MonoBehaviour
     private TMPro.TextMeshProUGUI messageText;
     [SerializeField]
     private UnityEngine.UI.Slider difficultySlider;
+    [SerializeField]
+    private TMPro.TextMeshProUGUI records;
 
     private GameStat gameStat;
+    private string statsMessage;
 
     private const int MAX_ENERGY = 100;
 
@@ -22,7 +25,14 @@ public class GameMenu : MonoBehaviour
     {
         GameDifficulty = difficultySlider.value;
         gameStat = GameObject.Find("GameStat").GetComponent<GameStat>();
-        ShowMenu(menuContainer.activeInHierarchy, "Start");
+        statsMessage = $"Current time: {(int)gameStat.GameTime / 60:00}:" +
+                       $"{gameStat.GameTime % 60:00.0} - " +
+                       $"Record time: {(int)gameStat.MaxTime / 60:00}:" +
+                       $"{gameStat.MaxTime % 60:00.0}\n" +
+                       $"Current score: {gameStat.GameScore} - " +
+                       $"Max score: {gameStat.MaxScore}\n";
+        records.text = $"{GameStat.Records}";
+        ShowMenu(menuContainer.activeInHierarchy, "Start", statsMessage);
     }
 
     void LateUpdate()
@@ -31,11 +41,7 @@ public class GameMenu : MonoBehaviour
         {
             ShowMenu(
                 !menuContainer.activeInHierarchy,
-                message:
-                $"Current time: {(int)gameStat.GameTime / 60:00}:{gameStat.GameTime % 60:00.0} - " +
-                $"Record time: {(int)gameStat.MaxTime / 60:00}:{gameStat.MaxTime % 60:00.0}\n" +
-                $"Current score: {gameStat.GameScore} - " +
-                $"Max score: {gameStat.MaxScore}\n"
+                message: statsMessage
             );
         }
     }

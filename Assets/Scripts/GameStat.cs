@@ -1,3 +1,4 @@
+using System.Text;
 using UnityEngine;
 
 public class GameStat : MonoBehaviour
@@ -73,7 +74,7 @@ public class GameStat : MonoBehaviour
         get => _maxTime;
     }
 
-    private RecordsData recordsData;
+    public static RecordsData Records;
     private readonly Color[] RECORD_COLORS =
     {
         new Color(1, .84f, 0),
@@ -88,16 +89,16 @@ public class GameStat : MonoBehaviour
 
         LivesCount = 3;
         GameEnergy = energy.fillAmount;
-        recordsData = new RecordsData();
+        Records = new RecordsData();
 
         if (System.IO.File.Exists(_recordsDataFilename))
         {
-            recordsData = JsonUtility.FromJson<RecordsData>(
+            Records = JsonUtility.FromJson<RecordsData>(
                 System.IO.File.ReadAllText(_recordsDataFilename)
             );
 
-            _maxScore = recordsData.Scores[0];
-            _maxTime = recordsData.Times[0];
+            _maxScore = Records.Scores[0];
+            _maxTime = Records.Times[0];
         }
     }
 
@@ -110,47 +111,42 @@ public class GameStat : MonoBehaviour
     {
         for (int i = 0; i < 3; ++i)
         {
-            if (_gameScore > recordsData.Scores[i])
+            if (_gameScore > Records.Scores[i])
             {
                 switch (i)
                 {
                     case 0:
                         for (int j = 0; j < 2; ++j)
                         {
-                            recordsData.Scores[2 - j] =
-                            recordsData.Scores[1 - j];
-                            recordsData.Times[2 - j] =
-                            recordsData.Times[1 - j];
+                            Records.Scores[2 - j] =
+                            Records.Scores[1 - j];
+                            Records.Times[2 - j] =
+                            Records.Times[1 - j];
                         }
                         break;
                     case 1:
-                        recordsData.Scores[2] = recordsData.Scores[1];
-                        recordsData.Times[2] = recordsData.Times[1];
+                        Records.Scores[2] = Records.Scores[1];
+                        Records.Times[2] = Records.Times[1];
                         break;
                     default:
                         break;
                 }
 
-                recordsData.Scores[i] = _gameScore;
-                recordsData.Times[i] = _gameTime;
+                Records.Scores[i] = _gameScore;
+                Records.Times[i] = _gameTime;
                 break;
             }
         }
 
         System.IO.File.WriteAllText(
             _recordsDataFilename,
-            JsonUtility.ToJson(recordsData, true)
+            JsonUtility.ToJson(Records, true)
         );
     }
 
     private void UpdateUITime()
     {
         clock.text = $"{(int)_gameTime / 60:00}:{_gameTime % 60:00.0}";
-
-        if (_gameTime > _maxTime)
-        {
-            clock.fontStyle = TMPro.FontStyles.Bold;
-        }
     }
 
     private void UpdateUIScore()
@@ -159,7 +155,7 @@ public class GameStat : MonoBehaviour
 
         for (int i = 2; i > -1; --i)
         {
-            if (_gameScore > recordsData.Scores[i])
+            if (_gameScore > Records.Scores[i])
             {
                 score.fontStyle = TMPro.FontStyles.Bold;
                 score.color = RECORD_COLORS[i];
@@ -182,10 +178,28 @@ public class GameStat : MonoBehaviour
         lives.text = $"{_livesCount}";
     }
 
-    class RecordsData
+    public class RecordsData
     {
         public short[] Scores = new short[3];
         public float[] Times = new float[3];
+
+        public override string ToString()
+        {
+            StringBuilder result = new();
+            for(int i = 0; i < 3; ++i)
+            {
+                result.Append(i == 0 ? "1st" : i == 1 ? "2nd" : "3rd");
+                result.Append("\n");
+                result.Append($"Score: {Records.Scores[i]}\n");
+                result.Append($"Time: {Records.Times[i]:00.0}");
+                if (i < 2)
+                {
+                    result.Append("\n\n");
+                }
+            }
+
+            return result.ToString();
+        }
     }
 
     public void Reset()
