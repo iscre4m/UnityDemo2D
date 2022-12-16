@@ -31,7 +31,7 @@ public class GameMenu : MonoBehaviour
                        $"{gameStat.MaxTime % 60:00.0}\n" +
                        $"Current score: {gameStat.GameScore} - " +
                        $"Max score: {gameStat.MaxScore}\n";
-        records.text = $"{GameStat.Records}";
+        SetRecords();
         ShowMenu(menuContainer.activeInHierarchy, "Start", statsMessage);
     }
 
@@ -79,5 +79,10 @@ public class GameMenu : MonoBehaviour
     public void DifficultyChanged(float value)
     {
         GameDifficulty = value;
+    }
+
+    public void SetRecords()
+    {
+        records.text = $"{GameStat.Records}";
     }
 }

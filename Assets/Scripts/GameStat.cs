@@ -107,7 +107,7 @@ public class GameStat : MonoBehaviour
         GameTime += Time.deltaTime;
     }
 
-    private void OnDestroy()
+    private void SaveStats()
     {
         for (int i = 0; i < 3; ++i)
         {
@@ -142,6 +142,11 @@ public class GameStat : MonoBehaviour
             _recordsDataFilename,
             JsonUtility.ToJson(Records, true)
         );
+    }
+
+    private void OnDestroy()
+    {
+        SaveStats();
     }
 
     private void UpdateUITime()
@@ -211,8 +216,13 @@ public class GameStat : MonoBehaviour
 
     public void GameOver()
     {
+        SaveStats();
+        gameMenu.SetRecords();
+        gameMenu.ShowMenu(
+            buttonText: "Again",
+            message: $"You scored {_gameScore} points in {_gameTime:00.0}"
+        );
         GameTime = 0;
         GameScore = 0;
-        gameMenu.ShowMenu(buttonText: "Again");
     }
 }
